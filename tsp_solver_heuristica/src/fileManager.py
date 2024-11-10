@@ -1,4 +1,8 @@
-from src.utils import os_path_converter, remove_emptys_list_and_casting, node_distance
+from importlib.resources import contents
+from pkgutil import iter_modules
+
+from src.utils import (os_path_converter, remove_emptys_list_and_casting, node_distance, strip_list_elements,
+                       is_digit_positive_negative)
 import os
 
 class FileManeger:
@@ -117,3 +121,58 @@ class FileManeger:
                     adjacency_matrix[y].insert(x, distancia)
 
         return infos, adjacency_matrix
+
+
+    def read_tour_file(self, file_name):
+        """
+        Funcao para leitura dos arquivos de resposta .tour.
+        :return: 1: tupla:(informacoes do documento:dict, resposta:list)
+                2: -1 em caso de erros de inconsistencia no arquivo
+                3: None caso nao consiga abrir o arquivo
+        """
+        file_name = self.in_path + "/" + file_name
+        file_name = os_path_converter(file_name)
+        try:
+            tour_file = open(file_name, "r")
+        except:
+            return None
+
+        moment = "read_info"
+        infos = dict()
+        solution = list()
+
+        file_content = tour_file.readline()
+        while file_content != "":
+            file_content = file_content.strip()
+
+            if moment == "read_info" and file_content.find(":") != -1:
+                content = strip_list_elements(file_content.split(":"))
+                if content[0].upper() == "NAME":
+                    infos["name"] = content[1]
+
+                elif content[0].upper() == "TYPE":
+                    infos["type"] = content[1]
+
+                elif content[0].upper() == "DIMENSION":
+                    infos["dimension"] = content[1]
+
+            elif moment == "read_info" and file_content.upper() == "TOUR_SECTION":
+                moment = "problem_solution"
+
+            elif moment == "problem_solution":
+                if file_content.upper() != "EOF":
+                    if is_digit_positive_negative(file_content):
+                        solution.append(float(file_content))
+                    else:
+                        return -1
+
+            file_content = tour_file.readline()
+
+        if int(infos["dimension"]) != len(solution) - 1: # inconsistencia no arquivo
+            print("FOI AQUIII")
+            return -1
+
+        return infos, solution
+
+
+

@@ -33,3 +33,12 @@ if __name__ == '__main__':
     for i in adj_matrix:
         print(i)
 
+
+    tour = file_manager.read_tour_file("berlin52.opt.tour")
+    if tour is None:
+        print("ERRO!, nao foi possivel abrir o arquivo ")
+    elif tour == -1:
+        print("ERRO! inconsistencia no arquivo")
+    else:
+        print(tour[0]) # informacoes
+        print(tour[1]) # caminho

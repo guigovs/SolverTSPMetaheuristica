@@ -37,7 +37,27 @@ def remove_emptys_list_and_casting(list_check: list, cast="") -> list:
 
     return list_checked
 
+
+def strip_list_elements(content_list:list) -> list:
+    """
+    Funcao para remocao de espacos desnecessarios em elementos do tipo string, dentro de uma lista
+    """
+    for i in range(len(content_list)):
+        if type(content_list[i]) == str:
+            content_list[i] = content_list[i].strip()
+    return content_list
+
+
 def node_distance(x1, y1, x2, y2):
     a = (x2 - x1) ** 2
     b = (y2 - y1) ** 2
     return sqrt(a + b)
+
+
+def is_digit_positive_negative(string:str):
+    if string.isdigit():
+        return True
+    elif string.startswith("-") and string[1:].isdigit():  # Verifica se é um número negativo
+        return True
+    else:
+        return False
