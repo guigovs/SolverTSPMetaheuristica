@@ -119,13 +119,13 @@ class FileManeger:
             return -1
 
         # x e y sao dois nos conectados sendo cada no uma tupla
-        for x in range(len(nodes)):
-            for y in range(x, len(nodes)):
-                if x == 0: # deve criar as linhas
+        for y in range(len(nodes)):
+            for x in range(len(nodes)):
+                if y == 0: # deve criar as linhas
                     adjacency_matrix.append([])
 
-                if x == y: # ignorar caminho de Si pra si propio
-                    adjacency_matrix[y].insert(x, "x")
+                if x == y or x < y: # ignorar caminho de Si pra si propio
+                    adjacency_matrix[y].insert(x, None)
 
                 else:
                     x1, y1 = nodes[x][1], nodes[x][2]

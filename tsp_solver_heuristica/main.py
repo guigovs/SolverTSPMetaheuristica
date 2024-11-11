@@ -1,19 +1,23 @@
-from ast import Param
 from sys import argv, exit
 from src.fileManager import FileManeger
+
+
+def tsp_solver():
+    pass
 
 
 if __name__ == '__main__':
 
     args = argv[1:]
-    if len(args) < 3:
+    if len(args) < 5:
         print("ERRO, Quantidade de parametros insuficientes.")
         exit(1)
 
     input_file = args[0]
     output_file = args[1]
-    metaheuristic = args[2]
-    rest_params = args[3:]
+    known_solution = args[2]
+    metaheuristic = args[3]
+    initial_node = args[4]
 
     #__ Ler Arquivo de entrada contendo o problema
     file_manager = FileManeger()
@@ -29,8 +33,8 @@ if __name__ == '__main__':
 
     # __ Preparar para resolver problema
     infos, adj_matrix = input_data
-    print(infos)
 
+    print(infos)
     for i in adj_matrix:
         print(i)
 
@@ -48,8 +52,8 @@ if __name__ == '__main__':
     file_manager.save_result(
         input_file=input_file,
         metaheuristics_method=metaheuristic,
-        innit_node="", #todo
-        objective="", #todo
+        innit_node=initial_node, #todo
+        objective=known_solution, #todo
         runtime="", #todo
         gap="", #todo
         nodes="", # todo
