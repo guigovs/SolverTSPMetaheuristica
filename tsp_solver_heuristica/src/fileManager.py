@@ -168,11 +168,29 @@ class FileManeger:
 
             file_content = tour_file.readline()
 
+        tour_file.close()
+
         if int(infos["dimension"]) != len(solution) - 1: # inconsistencia no arquivo
-            print("FOI AQUIII")
             return -1
 
         return infos, solution
 
+    def save_result(self, input_file, metaheuristics_method, innit_node, objective, runtime, gap, nodes, arcs):
+        path_result = os_path_converter(self.out_path + "/logExec.txt")
+        if os.path.exists(path_result):
+            file_exists = True
+        else:
+            file_exists = False
 
+        try:
+            result_file = open(path_result, "a+")
+        except:
+            return None
 
+        if not file_exists:
+            result_file.write("INSTANCE\tMETHOD\tPARAM\tOBJECTIVE\tRUNTIME\tGAP\tNODES\tARCS")
+
+        result_file.write(f"\n{input_file}\t{metaheuristics_method}\t{innit_node}"
+                          f"\t{objective}\t{runtime}\t{gap}\t{nodes}\t{arcs}")
+
+        result_file.close()

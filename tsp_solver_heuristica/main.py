@@ -1,3 +1,4 @@
+from ast import Param
 from sys import argv, exit
 from src.fileManager import FileManeger
 
@@ -11,7 +12,7 @@ if __name__ == '__main__':
 
     input_file = args[0]
     output_file = args[1]
-    nome_heuristica = args[2]
+    metaheuristic = args[2]
     rest_params = args[3:]
 
     #__ Ler Arquivo de entrada contendo o problema
@@ -42,3 +43,15 @@ if __name__ == '__main__':
     else:
         print(tour[0]) # informacoes
         print(tour[1]) # caminho
+
+    #__salvar execucao atual
+    file_manager.save_result(
+        input_file=input_file,
+        metaheuristics_method=metaheuristic,
+        innit_node="", #todo
+        objective="", #todo
+        runtime="", #todo
+        gap="", #todo
+        nodes="", # todo
+        arcs="" # todo
+    )
