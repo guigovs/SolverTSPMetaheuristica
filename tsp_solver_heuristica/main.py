@@ -1,9 +1,8 @@
 from sys import argv, exit
 from src.fileManager import FileManeger
-
-
-def tsp_solver():
-    pass
+from src.AgmPrim import prim
+from src.utils import edges_size
+import time
 
 
 if __name__ == '__main__':
@@ -32,30 +31,34 @@ if __name__ == '__main__':
         exit(1)
 
     # __ Preparar para resolver problema
-    infos, adj_matrix = input_data
+    input_infos, adj_matrix = input_data
 
-    print(infos)
+    print(input_infos)
     for i in adj_matrix:
         print(i)
 
+    exec_init = time.time()
+    prim(adj_matrix, 3, int(input_infos['dimension']))
+    exec_end = time.time()
+    exec_time = exec_end - exec_init
 
-    tour = file_manager.read_tour_file("berlin52.opt.tour")
+    '''tour = file_manager.read_tour_file("berlin52.opt.tour")
     if tour is None:
         print("ERRO!, nao foi possivel abrir o arquivo ")
     elif tour == -1:
         print("ERRO! inconsistencia no arquivo")
     else:
         print(tour[0]) # informacoes
-        print(tour[1]) # caminho
+        print(tour[1]) # caminho'''
 
     #__salvar execucao atual
     file_manager.save_result(
         input_file=input_file,
         metaheuristics_method=metaheuristic,
-        innit_node=initial_node, #todo
-        objective=known_solution, #todo
-        runtime="", #todo
+        innit_node=initial_node,
+        objective="", # todo
+        runtime=exec_time,
         gap="", #todo
-        nodes="", # todo
-        arcs="" # todo
+        nodes=input_infos['dimension'],
+        arcs=edges_size(int(input_infos['dimension']))
     )

@@ -53,6 +53,9 @@ def node_distance(x1, y1, x2, y2):
     b = (y2 - y1) ** 2
     return sqrt(a + b)
 
+def edges_size(graph_nodes_size):
+    return (graph_nodes_size * (graph_nodes_size - 1)) / 2
+
 
 def is_digit_positive_negative(string:str):
     if string.isdigit():
