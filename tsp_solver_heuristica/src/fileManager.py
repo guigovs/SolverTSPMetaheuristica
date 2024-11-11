@@ -10,8 +10,8 @@ class FileManeger:
     def __init__(self):
         self.in_path = ""
         self.out_path = ""
+        self.complete_path = None
         self.read_config_file()
-
 
     def read_config_file(self):
         """
@@ -32,6 +32,11 @@ class FileManeger:
                         self.in_path = content[1]
                     elif content[0] == "OUTPUT_FILES":
                         self.out_path = content[1]
+                    elif content[0] == "COMPLETE_PATH":
+                        if content[1].lower().strip() == "true":
+                            self.complete_path = True
+                        else:
+                            self.complete_path = False
         except:
             pass
 
@@ -51,7 +56,15 @@ class FileManeger:
         A Lista de adjacencias e preenchida metade dela apenas, devido o grafo ser unidirecional, e a
         diagonal principal com valor X, para ser ignorada, uma vez que nao saimos de um no para ir para ele mesmo.
         """
-        file = os_path_converter(self.in_path + "/" + file_name)
+        if not self.complete_path:
+            file = self.in_path + "/" + file_name
+        else:
+            if self.in_path != "":
+                file = f"{os.path.abspath(os.getcwd())}/{self.in_path}/{file_name}"
+            else:
+                file = f"{os.path.abspath(os.getcwd())}/{file_name}"
+
+        file = os_path_converter(file)
 
         try:
             with open(file, "r") as file:
