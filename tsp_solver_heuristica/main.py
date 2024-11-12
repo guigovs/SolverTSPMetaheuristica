@@ -33,14 +33,12 @@ if __name__ == '__main__':
     # __ Preparar para resolver problema
     input_infos, adj_matrix = input_data
 
-    print(input_infos)
-    for i in adj_matrix:
-        print(i)
-
     exec_init = time.time()
-    prim(adj_matrix, 3, int(input_infos['dimension']))
+    list_nodes = prim(adj_matrix, int(initial_node), int(input_infos['dimension']))
     exec_end = time.time()
     exec_time = exec_end - exec_init
+
+    print(list_nodes)
 
     '''tour = file_manager.read_tour_file("berlin52.opt.tour")
     if tour is None:

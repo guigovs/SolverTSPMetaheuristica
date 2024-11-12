@@ -1,4 +1,5 @@
 def prim(matriz, orig, num_nos):
+
   arvore = []
   no_marcados = [orig] #colocar a raiz
   linha = 0
@@ -32,5 +33,15 @@ def prim(matriz, orig, num_nos):
     no_marcados.append(no_escolhido)
     arvore.append([linha,coluna])
 
-    return arvore
+  print(arvore)
+  print(no_marcados)
+  # conections = [[4, 5], [3, 5], [2, 3], [1, 5], [0, 3]]
+  tree = dict()
+  for node in no_marcados:
+    tree[node] = []
+    for conect1, conect2 in arvore:
+      if node == conect2:
+        tree[node].append(conect1)
 
+
+  print(tree)
