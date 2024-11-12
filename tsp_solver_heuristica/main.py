@@ -1,6 +1,7 @@
 from sys import argv, exit
 from src.fileManager import FileManeger
 from src.AgmPrim import prim
+from src.vizinhoMaisProximo import vizinho_mais_proximo
 from src.utils import edges_size, gap
 import time
 
@@ -38,9 +39,8 @@ if __name__ == '__main__':
     if metaheuristic == "MST":
         cost = prim(adj_matrix, int(initial_node), int(input_infos['dimension']))
 
-    # todo colocar o resto aq
-    # elif metaheuristic == "NN":
-        #pass
+    elif metaheuristic == "NN":
+        cost = vizinho_mais_proximo(adj_matrix, int(initial_node), int(input_infos['dimension']))
 
     else:
         print("ERRO! Metaheuristica nao encontrada.")
