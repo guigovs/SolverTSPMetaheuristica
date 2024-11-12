@@ -38,8 +38,6 @@ if __name__ == '__main__':
     exec_end = time.time()
     exec_time = exec_end - exec_init
 
-    print(list_nodes)
-
     '''tour = file_manager.read_tour_file("berlin52.opt.tour")
     if tour is None:
         print("ERRO!, nao foi possivel abrir o arquivo ")

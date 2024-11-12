@@ -1,3 +1,6 @@
+CUSTO = 0.0
+
+
 def prim(matriz, orig, num_nos):
 
   arvore = []
@@ -33,8 +36,10 @@ def prim(matriz, orig, num_nos):
     no_marcados.append(no_escolhido)
     arvore.append([linha,coluna])
 
+  print("Matriz entrada")
   print(arvore)
-  print(no_marcados)
+  print("++++++++++++++++++++++++++++++++++++")
+
   # conections = [[4, 5], [3, 5], [2, 3], [1, 5], [0, 3]]
   tree = dict()
   for node in no_marcados:
@@ -43,5 +48,36 @@ def prim(matriz, orig, num_nos):
       if node == conect2:
         tree[node].append(conect1)
 
-
+  print("Arvore:")
   print(tree)
+  print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+  print("Olha a bomba:")
+  custo = busca_pre_ordem(tree, orig, matriz, 0.0)
+  print("-------------\n", CUSTO)
+
+
+def busca_pre_ordem(tree:dict, node, matriz, custo:float):
+    global CUSTO
+    children_node = tree[node]
+
+    print(node)
+    print(children_node)
+
+    if children_node != []:
+
+      for node_i in children_node:
+
+        if matriz[node][node_i] != None:
+          print(node, node_i)
+          custo += matriz[node][node_i]
+          CUSTO += matriz[node][node_i]
+        else:
+          print(node_i, node)
+          custo += matriz[node_i][node]
+          CUSTO += matriz[node_i][node]
+
+        busca_pre_ordem(tree, node_i, matriz, custo)
+
+    else:
+      return custo
