@@ -2,6 +2,7 @@ from sys import argv, exit
 from src.fileManager import FileManeger
 from src.AgmPrim import prim
 from src.vizinhoMaisProximo import vizinho_mais_proximo
+from src.Guloso import guloso
 from src.utils import edges_size, gap
 import time
 
@@ -41,6 +42,9 @@ if __name__ == '__main__':
 
     elif metaheuristic == "NN":
         cost = vizinho_mais_proximo(adj_matrix, int(initial_node), int(input_infos['dimension']))
+    
+    elif metaheuristic == "GUL":
+        cost = guloso(adj_matrix, int(initial_node), int(input_infos['dimension']))
 
     else:
         print("ERRO! Metaheuristica nao encontrada.")

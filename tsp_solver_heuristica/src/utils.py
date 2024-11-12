@@ -59,10 +59,10 @@ def edges_size(graph_nodes_size):
 
 
 def gap(fs_better, fs):
-    mod = fs_better - fs
+    mod = fs - fs_better
     if mod < 0:
         mod *= -1
-    return 100 * (mod / fs)
+    return 100 * (mod / fs_better)
 
 
 def is_digit_positive_negative(string:str):
