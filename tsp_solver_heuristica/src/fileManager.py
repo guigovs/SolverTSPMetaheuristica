@@ -1,6 +1,3 @@
-from importlib.resources import contents
-from pkgutil import iter_modules
-
 from src.utils import (os_path_converter, remove_emptys_list_and_casting, node_distance, strip_list_elements,
                        is_digit_positive_negative)
 import os
@@ -188,8 +185,17 @@ class FileManeger:
 
         return infos, solution
 
-    def save_result(self, input_file, metaheuristics_method, innit_node, objective, runtime, gap, nodes, arcs):
-        path_result = os_path_converter(self.out_path + "/logExec.txt")
+    def save_result(self, file_name ,input_file, metaheuristics_method, innit_node, objective, runtime, gap, nodes, arcs):
+        if not self.complete_path:
+            file = self.out_path + "/" + file_name
+        else:
+            if self.out_path != "":
+                file = f"{os.path.abspath(os.getcwd())}/{self.out_path}/{file_name}"
+            else:
+                file = f"{os.path.abspath(os.getcwd())}/{file_name}"
+
+        path_result = os_path_converter(file)
+
         if os.path.exists(path_result):
             file_exists = True
         else:

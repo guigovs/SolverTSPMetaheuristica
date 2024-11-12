@@ -1,7 +1,7 @@
 from sys import argv, exit
 from src.fileManager import FileManeger
 from src.AgmPrim import prim
-from src.utils import edges_size
+from src.utils import edges_size, gap
 import time
 
 
@@ -14,8 +14,8 @@ if __name__ == '__main__':
 
     input_file = args[0]
     output_file = args[1]
-    known_solution = args[2]
-    metaheuristic = args[3]
+    known_best_solution = args[2]
+    metaheuristic = args[3].upper()
     initial_node = args[4]
 
     #__ Ler Arquivo de entrada contendo o problema
@@ -33,12 +33,42 @@ if __name__ == '__main__':
     # __ Preparar para resolver problema
     input_infos, adj_matrix = input_data
 
+    cost = 0
     exec_init = time.time()
-    list_nodes = prim(adj_matrix, int(initial_node), int(input_infos['dimension']))
+    if metaheuristic == "MST":
+        cost = prim(adj_matrix, int(initial_node), int(input_infos['dimension']))
+
+    # todo colocar o resto aq
+    # elif metaheuristic == "NN":
+        #pass
+
+    else:
+        print("ERRO! Metaheuristica nao encontrada.")
+        exit(1)
+
     exec_end = time.time()
     exec_time = exec_end - exec_init
+    gap_v = gap(fs_better=int(known_best_solution), fs=cost)
 
-    '''tour = file_manager.read_tour_file("berlin52.opt.tour")
+    # reduzindo numero flutuante
+    cost = f"{cost:.4f}"
+    gap_v = f"{gap_v:.4f}"
+
+    #__salvar execucao atual
+    file_manager.save_result(
+        file_name=output_file,
+        input_file=input_file,
+        metaheuristics_method=metaheuristic,
+        innit_node=initial_node,
+        objective=cost,
+        runtime=exec_time,
+        gap=gap_v,
+        nodes=input_infos['dimension'],
+        arcs=edges_size(int(input_infos['dimension']))
+    )
+
+
+'''tour = file_manager.read_tour_file("berlin52.opt.tour")
     if tour is None:
         print("ERRO!, nao foi possivel abrir o arquivo ")
     elif tour == -1:
@@ -46,15 +76,3 @@ if __name__ == '__main__':
     else:
         print(tour[0]) # informacoes
         print(tour[1]) # caminho'''
-
-    #__salvar execucao atual
-    file_manager.save_result(
-        input_file=input_file,
-        metaheuristics_method=metaheuristic,
-        innit_node=initial_node,
-        objective="", # todo
-        runtime=exec_time,
-        gap="", #todo
-        nodes=input_infos['dimension'],
-        arcs=edges_size(int(input_infos['dimension']))
-    )
