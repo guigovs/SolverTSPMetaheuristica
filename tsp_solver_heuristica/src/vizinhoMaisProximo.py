@@ -47,7 +47,4 @@ def vizinho_mais_proximo(matriz, orig, num_nos) -> float:
         elif n1 > n2 and matriz[n2][n1] is not None:
             custo_total += matriz[n2][n1]
 
-    print("Rota gerada:", rota)
-    print(f"Custo total da rota: {custo_total}")
-
     return custo_total

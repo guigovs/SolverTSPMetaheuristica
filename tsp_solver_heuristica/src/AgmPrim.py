@@ -39,5 +39,4 @@ def prim(matriz, orig, num_nos) -> float:
       elif matriz[n2][n1] is None:
         custo += matriz[n1][n2]
 
-    print(f"Custo total da rota: {custo}")
     return custo

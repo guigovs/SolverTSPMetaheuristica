@@ -34,6 +34,5 @@ def guloso(matriz, orig, num_nos):
         custo += matriz[orig][no[-1]]
         no.append(orig)
 
-    print(custo)
     return custo
     
