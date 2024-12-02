@@ -26,6 +26,7 @@ class TwoOpt:
         #executando o 2-opt
         tamanho = len(self.solucao)  
         iteracao = 0  
+        melhorou_alguma_vez = False
         while True:
             melhorou = False  # verificar se a solucao foi otimizada
             iteracao += 1
@@ -47,13 +48,15 @@ class TwoOpt:
                         self.solucao = nova_solucao 
                         self.custo_solucao = novo_custo  
                         melhorou = True  
+                        melhorou_alguma_vez = True
                         break  # encerrando ao encontrar a primeira melhoria
 
                 if melhorou:
                     break  
 
             # se não houver mais melhorias termina a busca
-            if not melhorou:
+            if melhorou:
                 break
 
-        return self.custo_solucao, self.solucao
+        return self.custo_solucao, melhorou_alguma_vez
+
