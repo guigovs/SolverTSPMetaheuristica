@@ -5,6 +5,7 @@ from src.vizinhoMaisProximo import vizinho_mais_proximo
 from src.Guloso import guloso
 from src.utils import edges_size, gap
 from src.firstImprovementSwap import FirstImprovWithSwap
+from src.twoOptFirstImprovement import TwoOpt 
 import time
 
 
@@ -49,7 +50,7 @@ if __name__ == '__main__':
     if metaheuristic == "MST":
         cost = prim(adj_matrix, int(initial_node), int(input_infos['dimension']))
 
-    elif metaheuristic == "NN" or "FS-NN-SWAP":
+    elif metaheuristic in ["NN", "FS-NN-SWAP", "FS-NN-2OPT"]:
         cost, solution = vizinho_mais_proximo(adj_matrix, int(initial_node), int(input_infos['dimension']))
     
     elif metaheuristic == "GUL":
@@ -63,6 +64,11 @@ if __name__ == '__main__':
     if metaheuristic == "FS-NN-SWAP":
         fsswap = FirstImprovWithSwap(adj_matrix, solution, cost, input_infos['dimension'])
         cost, find = fsswap.find_better()
+        
+    elif metaheuristic == "FS-NN-2OPT":
+        two_opt = TwoOpt(adj_matrix, solution, cost, input_infos['dimension'])
+        cost, solution = two_opt.optimize()
+        find = cost < float(known_best_solution)
 
     exec_end = time.time()
     exec_time = exec_end - exec_init
