@@ -8,9 +8,7 @@ from src.firstImprovementSwap import FirstImprovWithSwap
 import time
 
 
-
 if __name__ == '__main__':
-
     args = argv[1:]
     test_exec = False
 
@@ -42,12 +40,16 @@ if __name__ == '__main__':
     # __ Preparar para resolver problema
     input_infos, adj_matrix = input_data
 
+    if int(initial_node) > int(input_infos["dimension"])-1:
+        print("ERRO! No incial invalido, pois estrapola a quantidade de nos do grafo.")
+        exit(1)
+
     cost = 0
-    exec_init = time.time()
+    exec_init = time.time() # #------------- tempo ---------------------------------------------------------------------
     if metaheuristic == "MST":
         cost = prim(adj_matrix, int(initial_node), int(input_infos['dimension']))
 
-    elif metaheuristic == "NN":
+    elif metaheuristic == "NN" or "FS-NN-SWAP":
         cost, solution = vizinho_mais_proximo(adj_matrix, int(initial_node), int(input_infos['dimension']))
     
     elif metaheuristic == "GUL":
@@ -57,16 +59,26 @@ if __name__ == '__main__':
         print("ERRO! Metaheuristica nao encontrada.")
         exit(1)
 
+    #__Aprimorar resultado com busca local
+    if metaheuristic == "FS-NN-SWAP":
+        fsswap = FirstImprovWithSwap(adj_matrix, solution, cost, input_infos['dimension'])
+        cost, find = fsswap.find_better()
+
     exec_end = time.time()
     exec_time = exec_end - exec_init
+    #_______________________________________ fim Tempo ________________________________________________________________
+
+    # informar se caso tenha solicitado aprimoramento, se o valor foi aprimorado
+    if find is not None and find:
+        print("A solucao inicial foi aprimorada")
+    if find is not None and not find:
+        print("A solucao inicial nao foi aprimorada")
+
     gap_v = gap(fs_better=int(known_best_solution), fs=cost)
 
     # reduzindo numero flutuante
     cost = f"{cost:.4f}"
     gap_v = f"{gap_v:.4f}"
-
-    a = FirstImprovWithSwap(adj_matrix, solution, cost, input_infos['dimension'], (int(input_infos['dimension'])//2))
-    a.find_better()
 
     if not test_exec:
         #__salvar execucao atual
