@@ -1,4 +1,4 @@
-def vizinho_mais_proximo(matriz, orig, num_nos) -> float:
+def vizinho_mais_proximo(matriz, orig, num_nos) -> (float, list):
     rota = [] #inicializar a rota final
     no_marcados = [orig] #lista de nos que ja foram visitados
     no_atual = orig #definindo o no atual como inicial
@@ -40,11 +40,9 @@ def vizinho_mais_proximo(matriz, orig, num_nos) -> float:
 
     # calculo do custo total percorrendo a rota construída
     for n1, n2 in rota:
-        # Se n1 < n2, acessar matriz[n1][n2] (parte superior direita)
-        if n1 < n2 and matriz[n1][n2] is not None:
+        if matriz[n1][n2] is not None: # parte superior direita
             custo_total += matriz[n1][n2]
-        # Se n1 > n2, acessar matriz[n2][n1] (parte transposta)
-        elif n1 > n2 and matriz[n2][n1] is not None:
+        elif matriz[n2][n1] is not None: # parte transposta
             custo_total += matriz[n2][n1]
 
-    return custo_total
+    return custo_total, no_marcados

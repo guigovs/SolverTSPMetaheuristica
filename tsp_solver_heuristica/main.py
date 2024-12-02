@@ -4,13 +4,20 @@ from src.AgmPrim import prim
 from src.vizinhoMaisProximo import vizinho_mais_proximo
 from src.Guloso import guloso
 from src.utils import edges_size, gap
+from src.firstImprovementSwap import FirstImprovWithSwap
 import time
+
 
 
 if __name__ == '__main__':
 
     args = argv[1:]
-    if len(args) < 5:
+    test_exec = False
+
+    if args[-1] == "test":
+        test_exec = True
+
+    if len(args) < 5 or (len(args) == 5 and test_exec):
         print("ERRO, Quantidade de parametros insuficientes.")
         exit(1)
 
@@ -41,7 +48,7 @@ if __name__ == '__main__':
         cost = prim(adj_matrix, int(initial_node), int(input_infos['dimension']))
 
     elif metaheuristic == "NN":
-        cost = vizinho_mais_proximo(adj_matrix, int(initial_node), int(input_infos['dimension']))
+        cost, solution = vizinho_mais_proximo(adj_matrix, int(initial_node), int(input_infos['dimension']))
     
     elif metaheuristic == "GUL":
         cost = guloso(adj_matrix, int(initial_node), int(input_infos['dimension']))
@@ -58,18 +65,22 @@ if __name__ == '__main__':
     cost = f"{cost:.4f}"
     gap_v = f"{gap_v:.4f}"
 
-    #__salvar execucao atual
-    file_manager.save_result(
-        file_name=output_file,
-        input_file=input_file,
-        metaheuristics_method=metaheuristic,
-        innit_node=initial_node,
-        objective=cost,
-        runtime=exec_time,
-        gap=gap_v,
-        nodes=input_infos['dimension'],
-        arcs=edges_size(int(input_infos['dimension']))
-    )
+    a = FirstImprovWithSwap(adj_matrix, solution, cost, input_infos['dimension'], (int(input_infos['dimension'])//2))
+    a.find_better()
+
+    if not test_exec:
+        #__salvar execucao atual
+        file_manager.save_result(
+            file_name=output_file,
+            input_file=input_file,
+            metaheuristics_method=metaheuristic,
+            innit_node=initial_node,
+            objective=cost,
+            runtime=exec_time,
+            gap=gap_v,
+            nodes=input_infos['dimension'],
+            arcs=edges_size(int(input_infos['dimension']))
+        )
 
 
 '''tour = file_manager.read_tour_file("berlin52.opt.tour")
