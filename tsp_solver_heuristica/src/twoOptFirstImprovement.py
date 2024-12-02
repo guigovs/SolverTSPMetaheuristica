@@ -1,55 +1,59 @@
 class TwoOpt:
 
-    def __init__(self, graph, solution, solution_cost, dimension=None):
-        self.graph = graph
-        self.solution = solution
-        self.solution_cost = solution_cost
-        self.dimension = dimension  # Agora você pode usar esse parâmetro dentro da classe
+    def __init__(self, grafo, solucao, custo_solucao, dimensao=None):
 
-    def _calculate_cost(self, solution):
+        self.grafo = grafo  
+        self.solucao = solucao  
+        self.custo_solucao = custo_solucao  
+        self.dimensao = dimensao 
+
+    def _calcular_custo(self, solucao):
         """Calcula o custo total da rota fornecida."""
-        total_cost = 0.0
-        for i in range(len(solution) - 1):
-            n1, n2 = solution[i], solution[i + 1]
-            cost = self.graph[n1][n2] if self.graph[n1][n2] is not None else self.graph[n2][n1]
-            total_cost += cost
+        custo_total = 0.0
+        # itera sobre todos os nós da solução, exceto o último
+        for i in range(len(solucao) - 1):
+            n1, n2 = solucao[i], solucao[i + 1]
+            # obtem o custo entre dois nós se existir
+            custo = self.grafo[n1][n2] if self.grafo[n1][n2] is not None else self.grafo[n2][n1]
+            custo_total += custo
 
-        # Adiciona o custo de retorno ao nó inicial
-        n1, n2 = solution[-1], solution[0]
-        total_cost += self.graph[n1][n2] if self.graph[n1][n2] is not None else self.graph[n2][n1]
-        print(f"Custo calculado para a solução {solution}: {total_cost:.4f}")
-        return total_cost
+        # Adiciona o custo de retorno ao nó inicial fechando um ciclo
+        n1, n2 = solucao[-1], solucao[0]
+        custo_total += self.grafo[n1][n2] if self.grafo[n1][n2] is not None else self.grafo[n2][n1]
+        return custo_total
 
-    def optimize(self):
-        """Executa o 2-Opt com primeiro aprimorante."""
-        size = len(self.solution)
-        iteration = 0  # Para controle de iteração
+    def otimizar(self):
+        #executando o 2-opt
+        tamanho = len(self.solucao)  
+        iteracao = 0  
         while True:
-            improved = False
-            iteration += 1
+            melhorou = False  # verificar se a solucao foi otimizada
+            iteracao += 1
 
-            for i in range(size - 1):
-                for j in range(i + 2, size):  # Ignorar vizinhos adjacentes
-                    # Gerar uma nova solução aplicando o 2-Opt
-                    new_solution = (
-                        self.solution[:i + 1] +
-                        self.solution[i + 1:j + 1][::-1] +
-                        self.solution[j + 1:]
+            # tentando melhorar a solucao com 2-Opt
+            for i in range(tamanho - 1):
+                for j in range(i + 2, tamanho):  # ignorando os vizinhos adjascentes
+                    # nova solucao com a troca
+                    nova_solucao = (
+                        self.solucao[:i + 1] +  # primeira parte inalterada
+                        self.solucao[i + 1:j + 1][::-1] +  # invertendo parte da solucao
+                        self.solucao[j + 1:]  # ultima parte tambem inalterada
                     )
 
-                    # Calcular o custo da nova solução
-                    new_cost = self._calculate_cost(new_solution)
+                    # custo da nova solucao
+                    novo_custo = self._calcular_custo(nova_solucao)
 
-                    if new_cost < self.solution_cost:
-                        self.solution = new_solution
-                        self.solution_cost = new_cost
-                        improved = True
-                        break  # Primeiro aprimorante encontrado
+                    if novo_custo < self.custo_solucao:
+                        self.solucao = nova_solucao 
+                        self.custo_solucao = novo_custo  
+                        melhorou = True  
+                        break  # encerrando ao encontrar a primeira melhoria
 
-                if improved:
-                    break
+                if melhorou:
+                    break  
 
-            if not improved:
-                break  # Não há mais melhorias possíveis
+            # se não houver mais melhorias termina a busca
+            if not melhorou:
+                break
 
-        return self.solution_cost, self.solution
+        return self.custo_solucao, self.solucao

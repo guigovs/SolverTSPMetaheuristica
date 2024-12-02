@@ -67,7 +67,7 @@ if __name__ == '__main__':
         
     elif metaheuristic == "FS-NN-2OPT":
         two_opt = TwoOpt(adj_matrix, solution, cost, input_infos['dimension'])
-        cost, solution = two_opt.optimize()
+        cost, solution = two_opt.otimizar()
         find = cost < float(known_best_solution)
 
     exec_end = time.time()
