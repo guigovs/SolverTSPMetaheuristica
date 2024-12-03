@@ -35,32 +35,38 @@ class FirstImprovWithSwap:
         encontrar vizinho melhor que a solucao atual, ou quando nao existe melhor
         :return: tupla com o valor resultado e um booleano que indica se a solucao foi aprimorada ou nao.
         """
-        find = False
+        find = True
         new_solution_cost = None
+        improved = False
 
-        for i in range(len(self.solution)):
-            for j in range(i + 1, len(self.solution)):
-                neighborhood = self.solution.copy()
-                #__fazendo o swap
-                aux = neighborhood[i]
-                neighborhood[i] = neighborhood[j]
-                neighborhood[j] = aux
+        while find:
+            find = False
+            for i in range(len(self.solution)):
+                for j in range(i + 1, len(self.solution)):
+                    neighborhood = self.solution.copy()
+                    #__fazendo o swap
+                    aux = neighborhood[i]
+                    neighborhood[i] = neighborhood[j]
+                    neighborhood[j] = aux
 
-                #__percorrendo
-                new_solution_cost = self._cost_calculator(neighborhood)
+                    #__percorrendo
+                    new_solution_cost = self._cost_calculator(neighborhood)
 
-                if new_solution_cost < self.solution_cost:
-                    find = True
-                    break # Finalizar busca na vizinhanca
+                    if new_solution_cost < self.solution_cost:
+                        self.solution = neighborhood
+                        self.solution_cost = new_solution_cost
+                        find = True
+                        improved = True
+                        break # Finalizar busca na vizinhanca
 
-            if find:
-                break
+                if find:
+                    break
 
         #Retronar resultado
-        if find:
-            return new_solution_cost, find
+        if improved:
+            return new_solution_cost, improved
         else:
-            return self.solution_cost, find
+            return self.solution_cost, improved
 
 
     def find_better_expanded(self, max_iterations=1000000):
