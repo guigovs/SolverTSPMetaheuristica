@@ -33,29 +33,35 @@ class DeleteAndInsert:
         Interrompe a procura ao encontrar vizinho melhor que a solução atual, ou quando não existe melhor.
         :return: tupla com o valor resultado e um booleano que indica se a solução foi aprimorada ou não.
         """
-        encontrado = False
+        encontrado = True
         novo_custo_solucao = None
+        aprimorado = False
 
-        for i in range(len(self.solucao)):
-            for j in range(len(self.solucao)):
-                if i == j:
-                    continue  # Não é possível inserir na mesma posição
+        while encontrado:
+            encontrado = False
+            for i in range(len(self.solucao)):
+                for j in range(len(self.solucao)):
+                    if i == j:
+                        continue  # Não é possível inserir na mesma posição
+                    
+                    vizinho = self.solucao.copy()
+                    no = vizinho.pop(i) # Realizando o Delete
+                    vizinho.insert(j, no) # Realizando o Insert
 
-                vizinho = self.solucao.copy()
-                no = vizinho.pop(i) # Realizando o Delete
-                vizinho.insert(j, no) # Realizando o Insert
+                    novo_custo_solucao = self._calcular_custo(vizinho)
 
-                novo_custo_solucao = self._calcular_custo(vizinho)
+                    if novo_custo_solucao < self.custo_solucao:
+                        self.solucao = vizinho
+                        self.custo_solucao = novo_custo_solucao
+                        encontrado = True
+                        aprimorado = True
+                        break  # Finalizar busca na vizinhança
 
-                if novo_custo_solucao < self.custo_solucao:
-                    encontrado = True
-                    break  # Finalizar busca na vizinhança
-
-            if encontrado:
-                break
+                if encontrado:
+                    break
 
         # Retornar resultado
-        if encontrado:
-            return novo_custo_solucao, encontrado
+        if aprimorado:
+            return novo_custo_solucao, aprimorado
         else:
-            return self.custo_solucao, encontrado
+            return self.custo_solucao, aprimorado
