@@ -55,7 +55,7 @@ class TwoOpt:
                     break  
 
             # se não houver mais melhorias termina a busca
-            if melhorou:
+            if not melhorou:
                 break
 
         return self.custo_solucao, melhorou_alguma_vez

@@ -62,7 +62,7 @@ if __name__ == '__main__':
         input_file = instancias[i]
         output_file = "res.dat"
         known_best_solution = melhores_solucoes[i]
-        metaheuristic = "FS-NN-DNI"
+        metaheuristic = "FS-NN-2OPT"
         initial_node = 1
 
         #__ Ler Arquivo de entrada contendo o problema
@@ -107,7 +107,6 @@ if __name__ == '__main__':
         elif metaheuristic == "FS-NN-2OPT":
             two_opt = TwoOpt(adj_matrix, solution, cost, input_infos['dimension'])
             cost, find = two_opt.otimizar()
-            print('-----------------------------------------', find)
 
         elif metaheuristic == "FS-NN-DNI":
             del_insert = DeleteAndInsert(adj_matrix, solution, cost, input_infos['dimension'])
@@ -119,9 +118,10 @@ if __name__ == '__main__':
 
         # informar se caso tenha solicitado aprimoramento, se o valor foi aprimorado
         if find is not None and find:
-            print("A solucao inicial foi aprimorada")
-        if find is not None and not find:
-            print("A solucao inicial nao foi aprimorada")
+            print(f"A solução inicial {i + 1} foi aprimorada")  
+        else:
+            print(f"A solução inicial {i + 1} não foi aprimorada")
+
 
         gap_v = gap(fs_better=int(known_best_solution), fs=cost)
 
