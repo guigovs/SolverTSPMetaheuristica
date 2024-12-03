@@ -206,10 +206,14 @@ class FileManeger:
         except:
             return None
 
+        # Cabeçalho (escrever apenas se o arquivo não existe)
         if not file_exists:
-            result_file.write("INSTANCE\tMETHOD\tPARAM\tOBJECTIVE\tRUNTIME\tGAP\tNODES\tARCS")
+            # Usar tabulação ou espaços para garantir alinhamento das colunas
+            header = f"{'INSTANCE':<15}{'METHOD':<15}{'PARAM':<10}{'OBJECTIVE':<15}{'RUNTIME':<12}{'GAP':<10}{'NODES':<10}{'ARCS':<10}"
+            result_file.write(header + "\n")
 
-        result_file.write(f"\n{input_file}\t{metaheuristics_method}\t{innit_node}"
-                          f"\t{objective}\t{runtime}\t{gap}\t{nodes}\t{arcs}")
+        # Escrever os dados com formatação adequada
+        result_line = f"{input_file:<15}{metaheuristics_method:<15}{innit_node:<10}{objective:<15}{runtime:<12.4f}{gap:<10}{nodes:<10}{arcs:<10}"
+        result_file.write(result_line + "\n")
 
         result_file.close()

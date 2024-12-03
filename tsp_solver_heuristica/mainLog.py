@@ -60,9 +60,9 @@ if __name__ == '__main__':
     for i in range(20):
 
         input_file = instancias[i]
-        output_file = "res.dat"
+        output_file = "res.csv"
         known_best_solution = melhores_solucoes[i]
-        metaheuristic = "FS-NN-2OPT"
+        metaheuristic = "FS-NN-SWAP"
         initial_node = 1
 
         #__ Ler Arquivo de entrada contendo o problema
@@ -85,6 +85,7 @@ if __name__ == '__main__':
             exit(1)
 
         cost = 0
+        find = None
         exec_init = time.time() # #------------- tempo ---------------------------------------------------------------------
         if metaheuristic == "MST":
             cost = prim(adj_matrix, int(initial_node), int(input_infos['dimension']))
@@ -118,9 +119,9 @@ if __name__ == '__main__':
 
         # informar se caso tenha solicitado aprimoramento, se o valor foi aprimorado
         if find is not None and find:
-            print(f"A solução inicial {i + 1} foi aprimorada")  
+            print(f"{i+1}: A solução inicial da instância {instancias[i]} foi aprimorada")
         else:
-            print(f"A solução inicial {i + 1} não foi aprimorada")
+            print(f"{i+1}: A solução inicial da instância {instancias[i]} não foi aprimorada")
 
 
         gap_v = gap(fs_better=int(known_best_solution), fs=cost)
