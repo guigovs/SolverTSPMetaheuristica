@@ -5,7 +5,8 @@ from src.vizinhoMaisProximo import vizinho_mais_proximo
 from src.Guloso import guloso
 from src.utils import edges_size, gap
 from src.firstImprovementSwap import FirstImprovWithSwap
-from src.twoOptFirstImprovement import TwoOpt 
+from src.twoOptFirstImprovement import TwoOpt
+from src.firstImprovementDnI import DeleteAndInsert
 import time
 
 
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     input_data = file_manager.read_input_file(input_file)
 
     if input_data is None:
-        print("ERRO, Arquivo de entrada nao encontrado. Considere checar a configuracao do programa no arquvio"
+        print("ERRO, Arquivo de entrada nao encontrado. Considere checar a configuracao do programa no arquivo"
               "\n config.txt, para verificar qual diretorio 'e usado para procurar arquivos de entrada.")
         exit(1)
     elif input_data == -1:
@@ -42,7 +43,7 @@ if __name__ == '__main__':
     input_infos, adj_matrix = input_data
 
     if int(initial_node) > int(input_infos["dimension"])-1:
-        print("ERRO! No incial invalido, pois estrapola a quantidade de nos do grafo.")
+        print("ERRO! No inicial invalido, pois estrapola a quantidade de nos do grafo.")
         exit(1)
 
     cost = 0
@@ -50,7 +51,7 @@ if __name__ == '__main__':
     if metaheuristic == "MST":
         cost = prim(adj_matrix, int(initial_node), int(input_infos['dimension']))
 
-    elif metaheuristic in ["NN", "FS-NN-SWAP", "FS-NN-2OPT"]:
+    elif metaheuristic in ["NN", "FS-NN-SWAP", "FS-NN-2OPT", "FS-NN-DNI"]:
         cost, solution = vizinho_mais_proximo(adj_matrix, int(initial_node), int(input_infos['dimension']))
     
     elif metaheuristic == "GUL":
@@ -69,6 +70,10 @@ if __name__ == '__main__':
         two_opt = TwoOpt(adj_matrix, solution, cost, input_infos['dimension'])
         cost, find = two_opt.otimizar()
         print('-----------------------------------------', find)
+
+    elif metaheuristic == "FS-NN-DNI":
+        del_insert = DeleteAndInsert(adj_matrix, solution, cost, input_infos['dimension'])
+        cost, find = del_insert.encontrar_otimizado()
         
     exec_end = time.time()
     exec_time = exec_end - exec_init
