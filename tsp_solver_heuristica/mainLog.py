@@ -60,9 +60,9 @@ if __name__ == '__main__':
     for i in range(20):
 
         input_file = instancias[i]
-        output_file = "res.csv"
+        output_file = "res.dat"
         known_best_solution = melhores_solucoes[i]
-        metaheuristic = "FS-NN-SWAP"
+        metaheuristic = "FS-NN-DNI"
         initial_node = 1
 
         #__ Ler Arquivo de entrada contendo o problema

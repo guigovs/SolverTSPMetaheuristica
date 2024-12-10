@@ -39,15 +39,15 @@ class DeleteAndInsert:
 
         while encontrado:
             encontrado = False
-            for i in range(len(self.solucao)):
+            for i, no in enumerate(self.solucao):  # Usando enumerate para obter índice e elemento
                 for j in range(len(self.solucao)):
                     if i == j:
                         continue  # Não é possível inserir na mesma posição
-                    
-                    vizinho = self.solucao.copy()
-                    no = vizinho.pop(i) # Realizando o Delete
-                    vizinho.insert(j, no) # Realizando o Insert
 
+                    vizinho = self.solucao[:i] + self.solucao[i+1:]  # Remove o elemento na posição 'i' (Delete)
+                    vizinho = vizinho[:j] + [no] + vizinho[j:]  # Insere o nó na posição 'j' (Insert)
+
+                    # Calcular custo do vizinho
                     novo_custo_solucao = self._calcular_custo(vizinho)
 
                     if novo_custo_solucao < self.custo_solucao:
