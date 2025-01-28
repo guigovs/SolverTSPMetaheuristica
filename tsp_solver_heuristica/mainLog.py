@@ -7,6 +7,7 @@ from src.utils import edges_size, gap
 from src.firstImprovementSwap import FirstImprovWithSwap
 from src.twoOptFirstImprovement import TwoOpt
 from src.firstImprovementDnI import DeleteAndInsert
+from src.grasp import GRASP
 import time
 
 if __name__ == '__main__':
@@ -95,6 +96,17 @@ if __name__ == '__main__':
         
         elif metaheuristic == "GUL":
             cost = guloso(adj_matrix, int(initial_node), int(input_infos['dimension']))
+
+        elif metaheuristic == "GRASP":
+            list_params = initial_node.split('-')
+
+            grasp = GRASP(
+                matriz_adjacencia=adj_matrix,
+                dimensao=int(input_infos['dimension']),
+                max_iteracoes=int(list_params[0]),
+                alfa=float(list_params[1])  # Controle da aleatoriedade (entre 0 e 1)
+            )
+            cost, solution = grasp.executar(no_inicial=int(list_params[2]))
 
         else:
             print("ERRO! Metaheuristica nao encontrada.")

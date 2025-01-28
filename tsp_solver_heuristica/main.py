@@ -28,6 +28,7 @@ if __name__ == '__main__':
     metaheuristic = args[3].upper()
     initial_node = args[4]
 
+
     #__Ler Arquivo de entrada contendo o problema
     file_manager = FileManeger()
     input_data = file_manager.read_input_file(input_file)
@@ -43,7 +44,7 @@ if __name__ == '__main__':
     #__Preparar para resolver problema
     input_infos, adj_matrix = input_data
 
-    if int(initial_node) > int(input_infos["dimension"])-1:
+    if metaheuristic != 'GRASP' and int(initial_node) > int(input_infos["dimension"])-1:
         print("ERRO! No inicial invalido, pois estrapola a quantidade de nos do grafo.")
         exit(1)
 
@@ -57,6 +58,18 @@ if __name__ == '__main__':
     
     elif metaheuristic == "GUL":
         cost = guloso(adj_matrix, int(initial_node), int(input_infos['dimension']))
+
+        #__Uso da metaheurístca
+    elif metaheuristic == "GRASP":
+        list_params = initial_node.split('-')
+
+        grasp = GRASP(
+            matriz_adjacencia=adj_matrix,
+            dimensao=int(input_infos['dimension']),
+            max_iteracoes=int(list_params[0]),
+            alfa=float(list_params[1])  # Controle da aleatoriedade (entre 0 e 1)
+        )
+        cost, solution = grasp.executar(no_inicial=int(list_params[2]))
 
     else:
         print("ERRO! Metaheuristica nao encontrada.")
@@ -75,18 +88,6 @@ if __name__ == '__main__':
     elif metaheuristic == "FS-NN-DNI":
         del_insert = DeleteAndInsert(adj_matrix, solution, cost, input_infos['dimension'])
         cost, find = del_insert.encontrar_otimizado()
-
-
-
-    #__Uso da metaheurístca
-    elif metaheuristic == "GRASP":
-        grasp = GRASP(
-            matriz_adjacencia=adj_matrix,
-            dimensao=int(input_infos['dimension']),
-            max_iteracoes=100,
-            alfa=0.3  # Controle da aleatoriedade (entre 0 e 1)
-        )
-        cost, solution = grasp.executar(no_inicial=int(initial_node))
         
 
 
@@ -95,10 +96,10 @@ if __name__ == '__main__':
     #_______________________________________ fim Tempo ________________________________________________________________
 
     # informar se caso tenha solicitado aprimoramento, se o valor foi aprimorado
-    if find is not None and find:
-        print("A solucao inicial foi aprimorada")
-    if find is not None and not find:
-        print("A solucao inicial nao foi aprimorada")
+    # if find is not None and find:
+    #     print("A solucao inicial foi aprimorada")
+    # if find is not None and not find:
+    #     print("A solucao inicial nao foi aprimorada")
 
     gap_v = gap(fs_better=int(known_best_solution), fs=cost)
 
