@@ -7,6 +7,7 @@ from src.utils import edges_size, gap
 from src.firstImprovementSwap import FirstImprovWithSwap
 from src.twoOptFirstImprovement import TwoOpt
 from src.firstImprovementDnI import DeleteAndInsert
+from src.grasp import GRASP
 import time
 
 
@@ -27,7 +28,7 @@ if __name__ == '__main__':
     metaheuristic = args[3].upper()
     initial_node = args[4]
 
-    #__ Ler Arquivo de entrada contendo o problema
+    #__Ler Arquivo de entrada contendo o problema
     file_manager = FileManeger()
     input_data = file_manager.read_input_file(input_file)
 
@@ -39,7 +40,7 @@ if __name__ == '__main__':
         print("ERRO! O Arquivo de entrada apresenta inconsistencia.")
         exit(1)
 
-    # __ Preparar para resolver problema
+    #__Preparar para resolver problema
     input_infos, adj_matrix = input_data
 
     if int(initial_node) > int(input_infos["dimension"])-1:
@@ -74,7 +75,21 @@ if __name__ == '__main__':
     elif metaheuristic == "FS-NN-DNI":
         del_insert = DeleteAndInsert(adj_matrix, solution, cost, input_infos['dimension'])
         cost, find = del_insert.encontrar_otimizado()
+
+
+
+    #__Uso da metaheurístca
+    elif metaheuristic == "GRASP":
+        grasp = GRASP(
+            matriz_adjacencia=adj_matrix,
+            dimensao=int(input_infos['dimension']),
+            max_iteracoes=100,
+            alfa=0.3  # Controle da aleatoriedade (entre 0 e 1)
+        )
+        cost, solution = grasp.executar(no_inicial=int(initial_node))
         
+
+
     exec_end = time.time()
     exec_time = exec_end - exec_init
     #_______________________________________ fim Tempo ________________________________________________________________
