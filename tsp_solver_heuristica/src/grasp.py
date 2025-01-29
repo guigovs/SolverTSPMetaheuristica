@@ -1,5 +1,5 @@
 from src.graspVizinhoMaisProximo import vizinho_mais_proximo
-from src.twoOptFirstImprovement import TwoOpt
+from src.graspTwoOpt import TwoOptGrasp
 
 class GRASP:
     def __init__(self, matriz_adjacencia, dimensao, max_iteracoes, alfa):
@@ -20,7 +20,7 @@ class GRASP:
 
     def busca_local(self, solucao, custo_inicial):
         # Usa a classe TwoOpt para aprimorar a solução
-        otimizador = TwoOpt(
+        otimizador = TwoOptGrasp(
             grafo=self.matriz_adjacencia,
             solucao=solucao,
             custo_solucao=custo_inicial,
@@ -39,8 +39,8 @@ class GRASP:
             # Fase de busca local
             solucao_final, custo_final = self.busca_local(solucao_inicial, custo_inicial)
             # Atualiza a melhor solução global
-            if solucao_final < melhor_custo_global:
+            if custo_final < melhor_custo_global:
                 melhor_solucao_global = solucao_final
-                melhor_custo_global = solucao_final
+                melhor_custo_global = custo_final
 
         return melhor_solucao_global, melhor_custo_global

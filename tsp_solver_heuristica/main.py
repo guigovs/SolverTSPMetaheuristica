@@ -69,7 +69,7 @@ if __name__ == '__main__':
             max_iteracoes=int(list_params[0]),
             alfa=float(list_params[1])  # Controle da aleatoriedade (entre 0 e 1)
         )
-        cost, solution = grasp.executar(no_inicial=int(list_params[2]))
+        solution, cost = grasp.executar(no_inicial=int(list_params[2]))
 
     else:
         print("ERRO! Metaheuristica nao encontrada.")
