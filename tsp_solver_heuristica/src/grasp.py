@@ -32,7 +32,9 @@ class GRASP:
         melhor_solucao_global = None
         melhor_custo_global = float('inf')
 
-        for _ in range(self.max_iteracoes):
+        for i in range(self.max_iteracoes):
+            print(f"Iteração {i+1} de {self.max_iteracoes}")  # Print da iteração atual
+
             # Fase de construção
             custo_inicial, solucao_inicial = self.construir_solucao(no_inicial)
 
