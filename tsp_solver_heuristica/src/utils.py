@@ -93,3 +93,37 @@ def number_filter(string: str):
             buffer += char
 
     return buffer
+
+
+def string_is_float(string:str) -> bool:
+    dot_cont = 0
+
+    next_number = False
+
+    for i,char in enumerate(string):
+
+        if i == 0 and not char.isdigit():
+            return False
+        else:
+
+            if not next_number:
+                if char == ".":
+                    dot_cont += 1
+                    next_number = True
+
+                    if dot_cont > 1:
+                        return False
+            else:
+                if not char.isdigit():
+                    return False
+                else:
+                    next_number = False
+
+
+    if dot_cont == 0:
+        return False
+
+    if next_number:
+        return False
+
+    return True

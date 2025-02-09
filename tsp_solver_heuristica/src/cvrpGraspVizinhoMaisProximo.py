@@ -31,8 +31,12 @@ def vizinho_mais_proximo_cvrp(cvrp_data, alfa):
 
                 # Verifica se o cliente cabe na capacidade restante do veículo
                 if demanda_cliente <= capacidade_restante:
-                    # Obtém o custo (distância) para ir do nó atual até o cliente
-                    custo = matriz[no_atual][cliente]
+                    if no_atual < cliente and matriz[no_atual][cliente] is not None:
+                        custo = matriz[no_atual][cliente]
+                    elif no_atual > cliente and matriz[cliente][no_atual] is not None:
+                        custo = matriz[cliente][no_atual]
+                    else:
+                        continue
                     # Adiciona o cliente à lista de candidatos junto com o custo
                     candidatos.append((cliente, custo))
 

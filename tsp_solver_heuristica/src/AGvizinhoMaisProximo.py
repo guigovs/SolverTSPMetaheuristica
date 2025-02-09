@@ -11,10 +11,11 @@ def vizinho_mais_proximo(matriz, capacidade, demandas, orig, num_nos):
         proximo_no = None
 
         for cliente in clientes_restantes:
-            custo = matriz[no_atual][cliente]
-            if custo < menor_custo and (capacidade_atual + demandas[cliente] <= capacidade):
-                menor_custo = custo
-                proximo_no = cliente
+            if matriz[no_atual][cliente] is not None:
+                custo = matriz[no_atual][cliente]
+                if custo < menor_custo and (capacidade_atual + demandas[cliente] <= capacidade):
+                    menor_custo = custo
+                    proximo_no = cliente
 
         if proximo_no is None:
             # Se não puder adicionar mais clientes, retorna ao depósito e inicia nova rota

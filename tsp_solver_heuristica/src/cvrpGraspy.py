@@ -1,6 +1,5 @@
-from cvrpProblemModel import CvrpData
-from cvrpGraspVizinhoMaisProximo import vizinho_mais_proximo_cvrp
-from cvrpGraspTwoOpt import TwoOptGraspCVRP
+from src.cvrpGraspVizinhoMaisProximo import vizinho_mais_proximo_cvrp
+from src.cvrpGraspTwoOpt import TwoOptGraspCVRP
 
 class GRASP_CVRP:
     def __init__(self, cvrp_data, max_iteracoes, alfa):

@@ -1,4 +1,4 @@
-import AGvizinhoMaisProximo as vizinhoMaisProximo 
+import src.AGvizinhoMaisProximo as vizinhoMaisProximo
 import numpy as np
 import random
 
@@ -16,7 +16,7 @@ class AG :
 
     def inicializar_populacao(self) : 
         for _ in range(self.populacao_size):
-            self.populacao.append(vizinhoMaisProximo(
+            self.populacao.append(vizinhoMaisProximo.vizinho_mais_proximo(
                     self.matriz_adjacencia,
                     self.capacidade,
                     self.demanda,
@@ -26,9 +26,11 @@ class AG :
             
 
     def avaliar(self, solucao):
-        for i in range(len(solucao) - 1):
-            custo = sum(self.matriz_adjacencia[solucao[i]][solucao[i + 1]] )
-        return 1 / custo if custo > 0 else 1e-6  # Retorna o fitness
+        custo_total = 0
+        for rota in solucao:
+            for i in range(len(rota) - 1):
+                custo_total += self.matriz_adjacencia[rota[i]][rota[i + 1]]
+        return 1 / custo_total  # Retorna o fitness
     
     def verificar_factibilidade(self, solucao):
         clientes_atendidos = set()
@@ -109,38 +111,38 @@ class AG :
         if self.verificar_factibilidade([filho]):
             return filho
     
-def execucao(self):
-    melhor_solucao = None
-    melhor_fitness = -float('inf')
+    def execucao(self):
+        melhor_solucao = None
+        melhor_fitness = -float('inf')
 
-    self.inicializar_populacao()
+        self.inicializar_populacao()
 
-    for _ in range(self.max_iteracoes):
-        nova_populacao = []
+        for _ in range(self.max_iteracoes):
+            nova_populacao = []
 
-        # Preserva a melhor solução da geração anterior (elitismo)
-        melhor_da_geracao = max(self.populacao, key=self.avaliar)
-        nova_populacao.append(melhor_da_geracao)
+            # Preserva a melhor solução da geração anterior (elitismo)
+            melhor_da_geracao = max(self.populacao, key=self.avaliar)
+            nova_populacao.append(melhor_da_geracao)
 
-        # Geração de filhos com crossover
-        for _ in range((self.populacao_size - 1) // 2):
-            pai1 = self.selecao_pais()
-            pai2 = self.selecao_pais()
+            # Geração de filhos com crossover
+            for _ in range((self.populacao_size - 1) // 2):
+                pai1 = self.selecao_pais()
+                pai2 = self.selecao_pais()
 
-            filho1 = self.recombinacao(pai1, pai2)
-            filho2 = self.recombinacao(pai2, pai1)
+                filho1 = self.recombinacao(pai1, pai2)
+                filho2 = self.recombinacao(pai2, pai1)
 
-            filho1 = self.mutacao(filho1)
-            filho2 = self.mutacao(filho2)
+                filho1 = self.mutacao(filho1)
+                filho2 = self.mutacao(filho2)
 
-            nova_populacao.extend([filho1, filho2])
+                nova_populacao.extend([filho1, filho2])
 
-        self.populacao = nova_populacao
-        melhor_local = max(self.populacao, key=self.avaliar)
-        fitness_local = self.avaliar(melhor_local)
+            self.populacao = nova_populacao
+            melhor_local = max(self.populacao, key=self.avaliar)
+            fitness_local = self.avaliar(melhor_local)
 
-        if fitness_local > melhor_fitness:
-            melhor_solucao = melhor_local[:]
-            melhor_fitness = fitness_local
+            if fitness_local > melhor_fitness:
+                melhor_solucao = melhor_local[:]
+                melhor_fitness = fitness_local
 
-    return melhor_solucao, melhor_fitness
+        return melhor_solucao, melhor_fitness
