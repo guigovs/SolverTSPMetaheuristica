@@ -8,6 +8,8 @@ from src.firstImprovementSwap import FirstImprovWithSwap
 from src.twoOptFirstImprovement import TwoOpt
 from src.firstImprovementDnI import DeleteAndInsert
 from src.grasp import GRASP
+from cvrpGraspy import GRASP_CVRP
+from src.cvrpProblemModel import CvrpData
 import time
 
 
