@@ -72,3 +72,24 @@ def is_digit_positive_negative(string:str):
         return True
     else:
         return False
+
+
+def fix_list_itens(lista: list)-> list | None:
+    list_return = []
+
+    if lista is not None:
+        for item in lista:
+            if item != "" and item != "\n":
+                list_return.append(item.strip().rstrip())
+        return list_return
+    else:
+        return None
+
+
+def number_filter(string: str):
+    buffer = ""
+    for char in string:
+        if char.isdigit():
+            buffer += char
+
+    return buffer

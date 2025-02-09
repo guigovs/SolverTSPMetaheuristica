@@ -1,6 +1,8 @@
 from src.utils import (os_path_converter, remove_emptys_list_and_casting, node_distance, strip_list_elements,
-                       is_digit_positive_negative)
+                       is_digit_positive_negative, fix_list_itens, number_filter)
 import os
+
+from src.cvrpProblemModel import CvrpData
 
 class FileManeger:
 
@@ -214,3 +216,133 @@ class FileManeger:
         result_file.write(result_line + "\n")
 
         result_file.close()
+
+
+    def read_cvrp_instance(self, file_name) -> CvrpData | None:
+        if not self.complete_path:
+            file = self.in_path + "/" + file_name
+        else:
+            if self.in_path != "":
+                file = f"{os.path.abspath(os.getcwd())}/{self.in_path}/{file_name}"
+            else:
+                file = f"{os.path.abspath(os.getcwd())}/{file_name}"
+
+        file = os_path_converter(file)
+
+        try:
+            file_open = open(file, "r", encoding="utf-8")
+
+        except:
+            return None
+
+        line_content = file_open.readline().replace("\n", "")
+
+        #__ variaveis de controle de contexto e auxiliares
+        moment = "read_info"
+        nodes = list()
+
+        #__ dados a serem extraidos
+        nome = ""
+        number_of_trucks = ""
+        optimal_result = ""
+        dimension = ""
+        capacity = ""
+        depot = ""
+        adjacency_matrix = list()
+        nodes_demand = list()
+
+        while line_content != "":
+            if moment == "read_info":
+                if line_content.find("NAME") != -1:
+                    itens = fix_list_itens(line_content.split(":"))
+                    nome = itens[1]
+
+                elif line_content.find("COMMENT") != -1:
+                    itens = line_content.split(" ")
+                    moment = "find_trucks"
+
+                    for palavra in itens:
+                        if moment == "find_trucks":
+                            if "trucks" in palavra:
+                                moment = "truck_finded"
+
+                        elif moment == "truck_finded":
+                            check = number_filter(palavra)
+
+                            if check != "":
+                                number_of_trucks = check
+                                moment = "find_optimal"
+
+                        elif moment == "find_optimal":
+                            if "Optimal" in palavra or "optimal" in palavra:
+                                moment = "optimal_finded"
+
+                        elif moment == "optimal_finded":
+                            check = number_filter(palavra)
+                            if check != "":
+                                optimal_result = check
+
+                    moment = "read_info"
+
+                elif line_content.find("DIMENSION") != -1:
+                    itens = fix_list_itens(line_content.split(":"))
+                    dimension = number_filter(itens[1])
+
+                elif line_content.find("CAPACITY") != -1:
+                    itens = fix_list_itens(line_content.split(":"))
+                    capacity = number_filter(itens[1])
+
+
+                elif line_content.find("NODE_COORD_SECTION") != -1:
+                    moment = "read_nodes"
+
+            elif moment == "read_nodes":
+
+                if line_content.find("DEMAND_SECTION") != -1:
+                    moment = "demand_section"
+
+                else:
+                    nodes.append(remove_emptys_list_and_casting(line_content.split(" "), "FLOAT"))
+
+
+            elif moment == "demand_section":
+
+                if "DEPOT_SECTION" in line_content:
+                    moment = "depot_section"
+
+                else:
+                    itens = remove_emptys_list_and_casting(line_content.split(" "), "INT")
+                    nodes_demand.append(itens[1])
+
+            elif moment == "depot_section":
+                if depot == "":
+                    depot = line_content
+
+            line_content = file_open.readline().replace("\n", "")
+
+        for y in range(len(nodes)):
+            for x in range(len(nodes)):
+                if y == 0:  # deve criar as linhas
+                    adjacency_matrix.append([])
+
+                if x == y or x < y:  # ignorar caminho de Si pra si propio
+                    adjacency_matrix[y].insert(x, None)
+
+                else:
+                    x1, y1 = nodes[x][1], nodes[x][2]
+                    x2, y2 = nodes[y][1], nodes[y][2]
+                    distancia = node_distance(x1, y1, x2, y2)
+                    adjacency_matrix[y].insert(x, distancia)
+
+        dados = CvrpData()
+
+        dados.nome = nome
+        dados.set_number_of_trucks(number_of_trucks)
+        dados.set_optimal_value(optimal_result)
+        dados.set_dimension(dimension)
+        dados.set_capacity(capacity)
+        dados.set_depot(depot)
+        dados.adjacency_matrix = adjacency_matrix
+        dados.nodes_demand = nodes_demand
+
+        return dados
