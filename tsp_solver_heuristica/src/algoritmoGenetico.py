@@ -29,8 +29,9 @@ class AG :
         custo_total = 0
         for rota in solucao:
             for i in range(len(rota) - 1):
-                custo_total += self.matriz_adjacencia[rota[i]][rota[i + 1]]
-        return 1 / custo_total  # Retorna o fitness
+                if self.matriz_adjacencia[rota[i]][rota[i + 1]] is not None:
+                    custo_total += self.matriz_adjacencia[rota[i]][rota[i + 1]]
+        return custo_total  # Retorna o fitness
     
     def verificar_factibilidade(self, solucao):
         clientes_atendidos = set()
@@ -55,61 +56,65 @@ class AG :
         return True
 
     #algoritmo da roleta
-    def selecao_pais(self):
-        fitness = []
-        probabilidades = []
-        for sol in self.populacao:
-            fitness.append(self.avaliar(sol))
-        soma_fitness = sum(fitness)
-        for f in fitness:
-            probabilidades.append(f/soma_fitness)
-
-        return self.populacao[np.random.choice(len(self.populacao), p=probabilidades)]
+    def selecao_pais(self, populacao):
+        populacao.sort(key=lambda x: self.avaliar(x))
+        melhores_pais = []
+        for i in range(2):
+            melhores_pais.append(populacao[i])
+        return melhores_pais
     
     def mutacao(self, solucao):
-        while True:
-            solucao_mutada = solucao[:]
+        if random.random() < self.mutacao_prob:
+            # Escolhe duas rotas diferentes
+            rota1, rota2 = random.sample(solucao, 2)
 
-            # Seleciona duas rotas aleatórias
-            rota1_idx, rota2_idx = random.sample(range(len(solucao_mutada)), 2)
-            rota1 = solucao_mutada[rota1_idx]
-            rota2 = solucao_mutada[rota2_idx]
+            if len(rota1) > 2 and len(rota2) > 2:  # Garante que há clientes para trocar
+                # Escolhe um cliente de cada rota
+                cliente1 = random.choice(rota1[1:-1])  # Ignora o depósito
+                cliente2 = random.choice(rota2[1:-1])  # Ignora o depósito
 
-            # Seleciona um cliente de cada rota (ignorando o depósito)
-            cliente1 = random.choice([cliente for cliente in rota1 if cliente != self.orig])
-            cliente2 = random.choice([cliente for cliente in rota2 if cliente != self.orig])
+                # Troca os clientes entre as rotas
+                if cliente2 not in rota1: 
+                    rota1[rota1.index(cliente1)] = cliente2
+                if cliente1 not in rota2:
+                    rota2[rota2.index(cliente2)] = cliente1
 
-            # Troca os clientes entre as rotas
-            idx1 = rota1.index(cliente1)
-            idx2 = rota2.index(cliente2)
-            rota1[idx1], rota2[idx2] = rota2[idx2], rota1[idx1]
+        return solucao
 
-            # Verifica se a solução mutada é factível
-            if self.verificar_factibilidade(solucao_mutada):
-                return solucao_mutada
 
     def recombinacao(self, pai1, pai2):
-        #crossover de ordem (OX) entre dois pais
-        tamanho = len(pai1)
-        filho = [None] * tamanho
+        # Seleciona uma rota de cada pai para trocar
+        rota_pai1 = random.choice(pai1)
+        rota_pai2 = random.choice(pai2)
 
-        # Sorteia dois pontos de corte
-        ponto1, ponto2 = sorted(random.sample(range(1, tamanho - 1), 2))
+        # Remove os clientes da rota selecionada do outro pai
+        filho1 = [rota for rota in pai1 if rota != rota_pai1]
+        filho2 = [rota for rota in pai2 if rota != rota_pai2]
 
-        # Copia segmento do pai1 para o filho
-        filho[ponto1:ponto2] = pai1[ponto1:ponto2]
+        # Adiciona a rota do outro pai
+        filho1.append(rota_pai2)
+        filho2.append(rota_pai1)
 
-        # Preenche o restante com elementos do pai2 na ordem em que aparecem
-        pos_filho = ponto2
-        for gene in pai2:
-            if gene not in filho:
-                if pos_filho >= tamanho:
-                    pos_filho = 0
-                filho[pos_filho] = gene
-                pos_filho += 1
+        # Verifica e corrige clientes repetidos
+        filho1 = self.corrigir_clientes_repetidos(filho1)
+        filho2 = self.corrigir_clientes_repetidos(filho2)
 
-        if self.verificar_factibilidade([filho]):
-            return filho
+        return filho1, filho2
+
+    def corrigir_clientes_repetidos(self, solucao):
+        clientes_visitados = set()
+        novas_rotas = []
+
+        for rota in solucao:
+            nova_rota = [self.orig]  # Começa com o depósito
+            for cliente in rota[1:-1]:  # Ignora o depósito inicial e final
+                if cliente not in clientes_visitados:
+                    nova_rota.append(cliente)
+                    clientes_visitados.add(cliente)
+            nova_rota.append(self.orig)  # Retorna ao depósito
+            novas_rotas.append(nova_rota)
+
+        return novas_rotas
     
     def execucao(self):
         melhor_solucao = None
@@ -117,20 +122,22 @@ class AG :
 
         self.inicializar_populacao()
 
+        print("População inicial:")
+        for i in self.populacao:
+            print(i)
+            print()
+
         for _ in range(self.max_iteracoes):
             nova_populacao = []
 
             # Preserva a melhor solução da geração anterior (elitismo)
             melhor_da_geracao = max(self.populacao, key=self.avaliar)
             nova_populacao.append(melhor_da_geracao)
-
             # Geração de filhos com crossover
-            for _ in range((self.populacao_size - 1) // 2):
-                pai1 = self.selecao_pais()
-                pai2 = self.selecao_pais()
+            for i in range((self.populacao_size - 1) // 2):
+                pais = self.selecao_pais(self.populacao)
 
-                filho1 = self.recombinacao(pai1, pai2)
-                filho2 = self.recombinacao(pai2, pai1)
+                filho1, filho2 = self.recombinacao(pais[0], pais[1])
 
                 filho1 = self.mutacao(filho1)
                 filho2 = self.mutacao(filho2)
