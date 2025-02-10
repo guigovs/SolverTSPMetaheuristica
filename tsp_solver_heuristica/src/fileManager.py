@@ -344,5 +344,6 @@ class FileManeger:
         dados.set_depot(depot)
         dados.adjacency_matrix = adjacency_matrix
         dados.nodes_demand = nodes_demand
+        dados.nodes = nodes
 
         return dados

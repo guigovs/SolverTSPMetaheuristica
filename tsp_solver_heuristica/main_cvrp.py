@@ -1,20 +1,13 @@
 import os
-
-# se n aparecer o plot, tenta descomendar essas duas linhas
-#import matplotlib
-#matplotlib.use('TkAgg')  # Ou 'Qt5Agg' dependendo do seu sistema
-
-#import networkx as nx
-#import matplotlib.pyplot as plt
+from sys import argv, exit
 
 from src.cvrpProblemModel import CvrpData
 from src.fileManager import FileManeger
-
-from sys import argv, exit
-
+from src.cvrpProblemModel import CvrpData
 from src.utils import string_is_float
 from src.cvrpGraspy import GRASP_CVRP
 from src.algoritmoGenetico import AG
+from src.plotCVRP import plot_solution
 
 
 if __name__ == '__main__':
@@ -25,7 +18,7 @@ if __name__ == '__main__':
     alfa = 0.0
     population_size = ""
 
-    #        0       1               2               3               4 # todo
+    #        0       1               2               3               4
     # python.py  nomearquivo, arquvio_saida, metaheuristica, max_interacoes-alfa-geneticopopulacaosize,
 
     if len(argv) == 5:

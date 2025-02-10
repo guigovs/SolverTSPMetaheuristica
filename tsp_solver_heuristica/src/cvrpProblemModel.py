@@ -9,6 +9,7 @@ class CvrpData:
         self.depot_index = 0
         self.adjacency_matrix = list()
         self.nodes_demand = list()
+        self.nodes = list()
 
     def set_optimal_value(self, number):
         self.optimal_result = float(number)
