@@ -72,14 +72,8 @@ if __name__ == '__main__':
     extracted_data = file_maneger.read_cvrp_instance(file_name)
     extracted_data : CvrpData
 
-    """
-    for i in range(len(extracted_data.adjacency_matrix)):
-        print("")
-        for j in range(len(extracted_data.adjacency_matrix)):
-            if extracted_data.adjacency_matrix[i][j] is not None:
-                print("1", end="")
-                #print(extracted_data.adjacency_matrix[i][j], end="")
-    """
+    melhor_custo = None
+    melhor_solucao = None
 
     if file_name not in os.listdir(file_maneger.in_path):
         print(f"ERRO! Arquivo de entrada: {file_name} nao encontrado.")
@@ -101,33 +95,23 @@ if __name__ == '__main__':
             populacao_size=population_size,
             orig=extracted_data.depot_index,
         )
-        print("-------------->", population_size)
         melhor_solucao, melhor_custo = object_solver.execucao()
 
 
-    print(melhor_custo)
-    print(melhor_solucao)
+    if melhor_custo is not None and melhor_solucao is not None:
+        print("\n---------------------- RESUMO -------------------------")
+
+        # __validar solucao
+        for route in melhor_solucao:
+            carga = 0
+            for node in route:
+                carga += extracted_data.nodes_demand[node]
+
+            if carga >= extracted_data.capacity: # solucao invalida
+                print("ERRO no solver. Solver gerou solucao inviavel!")
+                exit(0)
 
 
-
-
-    """
-    arquivo = "A-n32-k5.vrp"
-
-    data = file.read_cvrp_instance(arquivo)
-    data : CvrpData
-
-
-    # Lista de arestas do grafo (exemplo)
-    arestas = [(1, 2), (1, 3), (2, 4), (3, 4), (4, 5)]
-
-    # Criar o grafo
-    G = nx.Graph()
-    G.add_edges_from(arestas)
-
-    # Desenhar o grafo
-    plt.figure(figsize=(6, 6))
-    nx.draw(G, with_labels=True, node_color='lightblue', edge_color='gray', node_size=1000, font_size=12)
-    plt.show()
-    """
-
+        print(melhor_custo)
+        print(melhor_solucao)
+        plot_solution(extracted_data, melhor_solucao)
