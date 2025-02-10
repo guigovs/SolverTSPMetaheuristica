@@ -4,11 +4,11 @@ from sys import argv, exit
 from src.cvrpProblemModel import CvrpData
 from src.fileManager import FileManeger
 from src.cvrpProblemModel import CvrpData
-from src.utils import string_is_float
+from src.utils import string_is_float, gap, edges_size
 from src.cvrpGraspy import GRASP_CVRP
 from src.algoritmoGenetico import AG
 from src.plotCVRP import plot_solution
-
+import time
 
 if __name__ == '__main__':
     metodo = None
@@ -79,6 +79,7 @@ if __name__ == '__main__':
         print(f"ERRO! Arquivo de entrada: {file_name} nao encontrado.")
         exit(0)
 
+    exec_init = time.time()  # #------------- tempo
     if metodo == "GRASP":
         object_solver = GRASP_CVRP(extracted_data, max_iteracoes, alfa)
         melhor_solucao, melhor_custo = object_solver.executar()
@@ -97,6 +98,9 @@ if __name__ == '__main__':
         )
         melhor_solucao, melhor_custo = object_solver.execucao()
 
+    # _______________________________________ fim Tempo
+    exec_end = time.time()
+    exec_time = exec_end - exec_init
 
     if melhor_custo is not None and melhor_solucao is not None:
         print("\n---------------------- RESUMO -------------------------")
@@ -114,4 +118,20 @@ if __name__ == '__main__':
 
         print(melhor_custo)
         print(melhor_solucao)
+
+        gap_v = gap(fs_better=extracted_data.optimal_result, fs=melhor_custo)
+        gap_v = f"{gap_v:.4f}"
+
+        file_maneger.save_result(
+            file_name=output_file,
+            input_file=file_name,
+            innit_node=argv[4],
+            nodes=extracted_data.dimension,
+            objective=extracted_data.optimal_result,
+            metaheuristics_method=metodo,
+            gap=gap_v,
+            runtime=exec_time,
+            arcs=edges_size(extracted_data.dimension)
+        )
+
         plot_solution(extracted_data, melhor_solucao)
