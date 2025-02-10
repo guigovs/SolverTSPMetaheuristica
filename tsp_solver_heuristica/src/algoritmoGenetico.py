@@ -122,11 +122,6 @@ class AG :
 
         self.inicializar_populacao()
 
-        print("População inicial:")
-        for i in self.populacao:
-            print(i)
-            print()
-
         for _ in range(self.max_iteracoes):
             nova_populacao = []
 

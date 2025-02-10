@@ -29,8 +29,6 @@ class GRASP_CVRP:
         melhor_custo_global = float('inf')   # Melhor custo total encontrado
 
         for i in range(self.max_iteracoes):
-            print(f"Iteração {i + 1} de {self.max_iteracoes}")
-
             # Fase de construção
             custo_inicial, rotas_iniciais = self.construir_solucao()
 
