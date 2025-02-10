@@ -4,13 +4,11 @@ import os
 #import matplotlib
 #matplotlib.use('TkAgg')  # Ou 'Qt5Agg' dependendo do seu sistema
 
-import networkx as nx
-import matplotlib.pyplot as plt
+#import networkx as nx
+#import matplotlib.pyplot as plt
 
 from src.cvrpProblemModel import CvrpData
 from src.fileManager import FileManeger
-
-from src.cvrpProblemModel import CvrpData
 
 from sys import argv, exit
 

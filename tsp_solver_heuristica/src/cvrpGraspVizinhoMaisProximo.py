@@ -1,3 +1,5 @@
+from src.cvrpProblemModel import CvrpData
+
 import random
 
 def vizinho_mais_proximo_cvrp(cvrp_data, alfa):
@@ -76,8 +78,13 @@ def vizinho_mais_proximo_cvrp(cvrp_data, alfa):
         for i in range(len(rota) - 1):
             n1 = rota[i]
             n2 = rota[i + 1]
-            # Soma o custo (distância) entre os nós ao custo total
-            custo_total += matriz[n1][n2]
+            # Obtém o custo entre os nós, considerando a matriz triangular
+            if n1 < n2 and matriz[n1][n2] is not None:
+                custo_total += matriz[n1][n2]
+            elif n1 > n2 and matriz[n2][n1] is not None:
+                custo_total += matriz[n2][n1]
+            else:
+                continue  # Ignora se o custo não está definido
 
     # Retorna o custo total e as rotas construídas
     return custo_total, rotas

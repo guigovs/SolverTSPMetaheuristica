@@ -1,3 +1,5 @@
+from src.cvrpProblemModel import CvrpData
+
 class TwoOptGraspCVRP:
 
     def __init__(self, cvrp_data, rotas, custo_total):
@@ -12,7 +14,13 @@ class TwoOptGraspCVRP:
         # Percorre a rota somando as distâncias entre os nós
         for i in range(len(rota) - 1):
             n1, n2 = rota[i], rota[i + 1]
-            custo += self.grafo[n1][n2]
+            # Acessa a matriz de adjacência considerando que ela pode ser triangular
+            if n1 < n2 and self.grafo[n1][n2] is not None:
+                custo += self.grafo[n1][n2]
+            elif n1 > n2 and self.grafo[n2][n1] is not None:
+                custo += self.grafo[n2][n1]
+            else:
+                continue  # Se o custo não está definido, ignora (ou trate conforme necessário)
         return custo
 
     def _calcular_carga_rota(self, rota):
@@ -35,6 +43,7 @@ class TwoOptGraspCVRP:
             # Percorre todas as rotas
             for idx_rota, rota in enumerate(self.rotas):
                 tamanho_rota = len(rota)
+                custo_rota_atual = self._calcular_custo_rota(rota)  # Calcula o custo da rota atual uma vez
                 # Tenta melhorar a rota atual 
                 for i in range(1, tamanho_rota - 2):  # Começa em 1 para não remover o depósito inicial
                     for j in range(i + 1, tamanho_rota - 1):  # Termina em tamanho_rota - 1 para não remover o depósito final
@@ -49,8 +58,8 @@ class TwoOptGraspCVRP:
 
                         # Calcula o novo custo da rota
                         novo_custo_rota = self._calcular_custo_rota(nova_rota)
-                        # Calcula o custo total com a rota modificada
-                        novo_custo_total = self.custo_total - self._calcular_custo_rota(rota) + novo_custo_rota
+                        # Calcula o novo custo total ajustado
+                        novo_custo_total = self.custo_total - custo_rota_atual + novo_custo_rota
 
                         if novo_custo_total < self.custo_total:
                             # Atualiza a rota na solução
@@ -62,10 +71,10 @@ class TwoOptGraspCVRP:
                             break  # Sai do loop interno (first improvement)
 
                     if melhorou:
-                        break  # se encontrou melhoria
+                        break  # Se encontrou melhoria, sai do loop de 'i'
 
                 if melhorou:
-                    break 
+                    break  # Se encontrou melhoria, sai para a próxima iteração global
 
             # Se não houve melhorias na iteração atual, encerra o loop principal
             if not melhorou:
