@@ -107,7 +107,7 @@ if __name__ == '__main__':
             for node in route:
                 carga += extracted_data.nodes_demand[node]
 
-            if carga >= extracted_data.capacity: # solucao invalida
+            if carga > extracted_data.capacity: # solucao invalida
                 print("ERRO no solver. Solver gerou solucao inviavel!")
                 exit(0)
 
