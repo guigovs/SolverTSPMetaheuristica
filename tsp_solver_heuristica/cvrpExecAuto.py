@@ -30,7 +30,7 @@ input_files = [
     ("A-n80-k10.vrp", 1763)
 ]
 
-grasp = True
+grasp = False
 alfas = [0.25, 0.5, 0.75]
 populacoes = [20, 30, 40]
 
@@ -47,7 +47,7 @@ if grasp:
                 print(f"Executando: {exec_list}")
                 subprocess.run(exec_list)
 else:
-    iteracoes = [10, 20, 30]
+    iteracoes = [60, 90, 120]
     for item in input_files:
         arquivo, best = item  # Garante que apenas um arquivo seja processado
         output = f"{arquivo[:-4]}_destino.dat"  # Nome do arquivo de saída baseado no nome do input

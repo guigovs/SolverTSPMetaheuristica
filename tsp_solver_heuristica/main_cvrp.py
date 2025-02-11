@@ -134,4 +134,4 @@ if __name__ == '__main__':
             arcs=edges_size(extracted_data.dimension)
         )
 
-        plot_solution(extracted_data, melhor_solucao)
+        #plot_solution(extracted_data, melhor_solucao)

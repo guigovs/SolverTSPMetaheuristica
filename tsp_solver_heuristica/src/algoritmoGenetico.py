@@ -64,7 +64,7 @@ class AG :
         return melhores_pais
     
     def mutacao(self, solucao):
-        if random.random() < self.mutacao_prob:
+        if random.random() < self.mutacao_prob and len(solucao) >= 2:  # Verifica se há pelo menos 2 rotas
             # Escolhe duas rotas diferentes
             rota1, rota2 = random.sample(solucao, 2)
 
