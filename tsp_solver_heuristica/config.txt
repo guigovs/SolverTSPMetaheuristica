@@ -1,3 +1,0 @@
-INPUT_FILES:files/input
-OUTPUT_FILES:files/output
-COMPLETE_PATH:true

@@ -1,1 +1,0 @@
-INSTANCE       METHOD         PARAM          OBJECTIVE      RUNTIME     GAP         NODES     ARCS            
